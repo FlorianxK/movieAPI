@@ -1,0 +1,15 @@
+package com.dev.movieapi.application.repositries;
+
+import com.dev.movieapi.db.dtos.MovieDto;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+
+public interface MovieServiceRepository {
+    MovieDto addMovie(MovieDto movieDto, MultipartFile file) throws IOException;
+
+    MovieDto getMovie(Integer movieId);
+
+    List<MovieDto> getAllMovies();
+}
