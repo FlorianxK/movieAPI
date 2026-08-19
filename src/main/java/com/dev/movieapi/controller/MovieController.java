@@ -1,6 +1,6 @@
 package com.dev.movieapi.controller;
 
-import com.dev.movieapi.application.service.MovieService;
+import com.dev.movieapi.application.repositries.MovieService;
 import com.dev.movieapi.db.dtos.MovieDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +36,20 @@ public class MovieController {
     @GetMapping("/all")
     public ResponseEntity<List<MovieDto>> getAllMovieHandler(){
         return ResponseEntity.ok(movieService.getAllMovies());
+    }
+
+    @PutMapping("/update/{movieId}")
+    public ResponseEntity<MovieDto> updateMovieHandler(@PathVariable Integer movieId,
+                                                       @RequestPart MultipartFile file,
+                                                       @RequestPart String movieDtoObj) throws IOException {
+        if(file.isEmpty()) file = null;
+        MovieDto movieDto = convertMovieDto(movieDtoObj);
+        return ResponseEntity.ok(movieService.updateMovie(movieId, movieDto, file));
+    }
+
+    @DeleteMapping("/delete/{movieId}")
+    public ResponseEntity<String> deleteMovieHandler(@PathVariable Integer movieId) throws IOException {
+        return ResponseEntity.ok(movieService.deleteMovie(movieId));
     }
 
     private MovieDto convertMovieDto(String movieDtoObject){

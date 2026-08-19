@@ -1,6 +1,6 @@
 package com.dev.movieapi.controller;
 
-import com.dev.movieapi.application.service.FileService;
+import com.dev.movieapi.application.repositries.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
