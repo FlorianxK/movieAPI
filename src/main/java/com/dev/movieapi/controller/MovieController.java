@@ -2,6 +2,7 @@ package com.dev.movieapi.controller;
 
 import com.dev.movieapi.application.repositries.MovieService;
 import com.dev.movieapi.db.dtos.MovieDto;
+import com.dev.movieapi.exceptions.EmptyFileException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,10 @@ public class MovieController {
 
     @PostMapping("/add-movie")
     public ResponseEntity<MovieDto> addMovieHandler(@RequestPart MultipartFile file,
-                                                    @RequestPart String movieDto) throws IOException {
+                                                    @RequestPart String movieDto) throws IOException, EmptyFileException {
+        if(file.isEmpty()){
+            throw new EmptyFileException("file is empty");
+        }
         MovieDto dto = convertMovieDto(movieDto);
         return new ResponseEntity<>(movieService.addMovie(dto,file), HttpStatus.CREATED);
     }

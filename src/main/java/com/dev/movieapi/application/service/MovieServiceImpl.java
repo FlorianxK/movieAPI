@@ -4,6 +4,8 @@ import com.dev.movieapi.application.repositries.FileService;
 import com.dev.movieapi.application.repositries.MovieRepository;
 import com.dev.movieapi.application.repositries.MovieService;
 import com.dev.movieapi.db.dtos.MovieDto;
+import com.dev.movieapi.exceptions.FileExistsException;
+import com.dev.movieapi.exceptions.MovieNotFoundException;
 import com.dev.movieapi.model.Movie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,7 @@ public class MovieServiceImpl implements MovieService {
 
         boolean exists = Files.exists( Paths.get(path+ File.separator+file.getOriginalFilename()) );
         if(exists){
-            throw new RuntimeException("File already exists!");
+            throw new FileExistsException("File already exists!");
         }
         String uploadedFileName = fileService.uploadFile(path, file);
 
@@ -73,7 +75,8 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDto getMovie(Integer movieId) {
-        Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new RuntimeException("Movie with id " + movieId + " not found") );
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new MovieNotFoundException("Movie with id " + movieId + " not found") );
 
         String posterUrl = baseUrl + "/file/" + movie.getPoster();
 
@@ -116,7 +119,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDto updateMovie(Integer movieId, MovieDto movieDto, MultipartFile file) throws IOException {
-        Movie mv = movieRepository.findById(movieId).orElseThrow(() -> new RuntimeException("Movie with id " + movieId + " not found") );
+        Movie mv = movieRepository.findById(movieId).orElseThrow(() -> new MovieNotFoundException("Movie with id " + movieId + " not found") );
 
         String fileName = mv.getPoster();
         if(file != null){
@@ -154,7 +157,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public String deleteMovie(Integer movieId) throws IOException {
-        Movie mv = movieRepository.findById(movieId).orElseThrow(() -> new RuntimeException("Movie with id " + movieId + " not found") );
+        Movie mv = movieRepository.findById(movieId).orElseThrow(() -> new MovieNotFoundException("Movie with id " + movieId + " not found") );
         Integer id = mv.getMovieId();
 
         Files.deleteIfExists(Paths.get(path + File.separator + mv.getPoster()));
