@@ -2,7 +2,9 @@ package com.dev.movieapi.controller;
 
 import com.dev.movieapi.application.repositries.MovieService;
 import com.dev.movieapi.db.dtos.MovieDto;
+import com.dev.movieapi.db.dtos.MoviePageResponse;
 import com.dev.movieapi.exceptions.EmptyFileException;
+import com.dev.movieapi.utils.AppConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +56,24 @@ public class MovieController {
     @DeleteMapping("/delete/{movieId}")
     public ResponseEntity<String> deleteMovieHandler(@PathVariable Integer movieId) throws IOException {
         return ResponseEntity.ok(movieService.deleteMovie(movieId));
+    }
+
+    @GetMapping("/allMoviesPage")
+    public ResponseEntity<MoviePageResponse> getMoviesWithPage(
+            @RequestParam(defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize
+    ){
+        return ResponseEntity.ok(movieService.getAllMoviesWithPage(pageNumber, pageSize));
+    }
+
+    @GetMapping("/allMoviesPageSort")
+    public ResponseEntity<MoviePageResponse> getMoviesWithPageAndSorting(
+            @RequestParam(defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+            @RequestParam(defaultValue = AppConstants.SORT_DIRECTION, required = false) String sortDirection
+    ){
+        return ResponseEntity.ok(movieService.getAllMoviesWithPageAndSorting(pageNumber, pageSize, sortBy, sortDirection));
     }
 
     private MovieDto convertMovieDto(String movieDtoObject){
