@@ -23,7 +23,7 @@ public class RefreshTokenService {
     }
 
     public RefreshToken createRefreshToken(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow( ()-> new UsernameNotFoundException("Invalid username"));
+        User user = userRepository.findByEmail(username).orElseThrow( ()-> new UsernameNotFoundException("Invalid username"));
 
         RefreshToken refreshToken = user.getRefreshToken();
         if(refreshToken == null) {
